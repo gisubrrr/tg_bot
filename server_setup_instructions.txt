@@ -1,0 +1,84 @@
+1) Покупка VDS на reg.ru/timeweb/selectel
+- Перейдите на сайт выбранного хостинга. Авторизуйтесь и выберите подходящий тариф VDS. Произведите покупку.
+
+2) Получение доступа к серверу
+- После оплаты на указанную почту придет письмо с данными для доступа к серверу (IP-адрес, логин и пароль).
+
+3) Подключение к серверу
+- Используйте SSH-клиент, например, Terminus, и подключитесь к серверу, используя полученные данные (NEW HOST).
+
+4) Установка необходимого ПО
+- Обновите список пакетов и установите необходимые зависимости:
+sudo apt-get update
+sudo apt-get upgrade
+
+5) Создаем директорию на сервере для будущего проекта
+mkdir "name_of_project"
+– Переходим в созданную директорию:
+cd "name_of_project"
+
+5) Установка Node.js и PM2
+- Для установки Node.js выполните следующие команды:
+curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+- Установите менеджер процессов PM2:
+sudo npm install pm2@latest -g
+
+6) Установка Python и pip
+- Установите Python и pip, если они ещё не установлены:
+sudo apt install python3-pip
+
+7) Настройка виртуального окружения Python
+- Установите пакет для создания виртуального окружения и активируйте его:
+sudo apt install python3.11-venv
+python3 -m venv venv
+source venv/bin/activate
+
+8) Установка зависимостей
+- Установите зависимости проекта из файла requirements.txt:
+pip install -r requirements.txt
+
+9) Настройка переменных окружения
+- Создайте файл .env в корне проекта и заполните его необходимыми переменными (например, токенами):
+nano .env
+
+10) Загрузка кода проекта с GitHub
+- Сделайте pull вашего проекта из репозитория:
+git pull
+
+11) Настройка PM2
+- Инициализируйте конфигурацию PM2:
+pm2 init
+- Отредактируйте файл ecosystem.config.js, указав необходимые параметры запуска вашего приложения:
+nano ecosystem.config.js
+
+Пример параметров:
+[
+ {
+    "name": "bot",
+    "script": "/root/wellhealth_research/wellhealthrus_helpbot/run.py",
+    "exec_mode": "fork",
+    "interpreter": "/root//wellhealth_research/wellhealthrus_helpbot/venv/bin/python3",
+    "watch": false,
+    "autorestart": true,
+    "env": {
+      "SHELL": "/bin/bash",
+      "VIRTUAL_ENV": "/root/wellhealth_research/wellhealthrus_helpbot/venv",
+      "PYTHON": "/root/wellhealth_research/wellhealthrus_helpbot/venv/bin/python3",
+      "PYTHONPATH": "/root//wellhealth_research/wellhealthrus_helpbot/venv"
+    }
+}]
+
+- Запустите приложение с помощью PM2:
+pm2 start ecosystem.config.js
+
+12) Обновление и перезапуск
+- Для обновления кода из Git и перезапуска приложения используйте команды:
+git pull
+pm2 restart 0
+
+13) Работа с базой данных (для macOS): 
+- Для получения базы данных на локальный компьютер:
+rsync -avz root@YOUR_SERVER_IP:/path/to/your/app/base.db /local/path
+- Для отправки базы данных на сервер:
+rsync -avz /local/path/base.db root@YOUR_SERVER_IP:/path/to/your/app/
